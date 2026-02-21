@@ -99,14 +99,39 @@ let activeTab = 'tagging';
 // ═══════════════════════════════════════════════════════
 //  STORAGE
 // ═══════════════════════════════════════════════════════
-function loadStorage() {
+async function loadStorage() {
+  // Fast local cache first
   try { tags          = JSON.parse(localStorage.getItem(TAG_KEY) || '{}'); } catch(e) { tags = {}; }
   try { impactFactors = JSON.parse(localStorage.getItem(IF_KEY)  || '{}'); } catch(e) { impactFactors = {}; }
   try { activities    = JSON.parse(localStorage.getItem(ACT_KEY) || '[]'); } catch(e) { activities = []; }
+
+  // Then hydrate from remote (authoritative) if enabled
+  const remote = await loadRemoteState();
+  if (remote) {
+    tags = remote.tags || {};
+    impactFactors = remote.impact_factors || {};
+    activities = remote.activities || [];
+    localStorage.setItem(TAG_KEY, JSON.stringify(tags));
+    localStorage.setItem(IF_KEY,  JSON.stringify(impactFactors));
+    localStorage.setItem(ACT_KEY, JSON.stringify(activities));
+  }
 }
-function saveTags()     { localStorage.setItem(TAG_KEY, JSON.stringify(tags)); updateIndexStats(); }
-function saveIFs()      { localStorage.setItem(IF_KEY,  JSON.stringify(impactFactors)); }
-function saveActivities(){ localStorage.setItem(ACT_KEY, JSON.stringify(activities)); renderActivitiesPublic(); }
+
+function saveTags() {
+  localStorage.setItem(TAG_KEY, JSON.stringify(tags));
+  updateIndexStats();
+  // Persist across devices
+  saveRemoteState();
+}
+function saveIFs() {
+  localStorage.setItem(IF_KEY,  JSON.stringify(impactFactors));
+  saveRemoteState();
+}
+function saveActivities() {
+  localStorage.setItem(ACT_KEY, JSON.stringify(activities));
+  renderActivitiesPublic();
+  saveRemoteState();
+}
 
 function getTag(putCode) { return tags[putCode] || { sci: false, scopus: false }; }
 function getIF(putCode)  { return impactFactors[putCode] || ''; }
@@ -245,10 +270,16 @@ async function fetchORCID() {
   const badgeText = document.getElementById('orcid-status-text');
 
   try {
+    // Prevent the whole page from getting stuck if ORCID is slow/unreachable
+    const controller = new AbortController();
+    const t = setTimeout(() => controller.abort(), 12000);
+
     const [worksRes, personRes] = await Promise.all([
-      fetch(`${ORCID_API}/${ORCID_ID}/works`,  { headers: { 'Accept': 'application/json' } }),
-      fetch(`${ORCID_API}/${ORCID_ID}/person`, { headers: { 'Accept': 'application/json' } })
+      fetch(`${ORCID_API}/${ORCID_ID}/works`,  { headers: { 'Accept': 'application/json' }, signal: controller.signal }),
+      fetch(`${ORCID_API}/${ORCID_ID}/person`, { headers: { 'Accept': 'application/json' }, signal: controller.signal })
     ]);
+
+    clearTimeout(t);
 
     if (personRes.ok) {
       const person = await personRes.json();
@@ -692,7 +723,7 @@ function showToast(msg) {
 //  INIT
 // ═══════════════════════════════════════════════════════
 async function init() {
-  loadStorage();
+  await loadStorage();
   renderActivitiesPublic();
 
   // Admin session (Supabase) preferred. Falls back to legacy local flag.
