@@ -544,3 +544,149 @@ body { background: var(--bg); color: var(--ink); font-family: 'DM Sans', sans-se
   #academic { page-break-after: auto; }
   .pub-item { page-break-inside: avoid; }
 }
+
+/* ── MISSING / FIXED STYLES ── */
+
+/* Login panel drawer */
+.login-panel {
+  position: fixed; top: 0; right: -420px; width: 400px; max-width: 95vw;
+  height: 100vh; background: var(--white); border-left: 1px solid var(--rule);
+  z-index: 1000; overflow-y: auto; transition: right 0.3s ease;
+  box-shadow: var(--shadow-lg); padding: 1.5rem;
+}
+.login-panel.open { right: 0; }
+.login-panel-overlay {
+  display: none; position: fixed; inset: 0; background: rgba(28,26,23,0.35);
+  z-index: 999; backdrop-filter: blur(2px);
+}
+.login-panel-overlay.open { display: block; }
+.login-panel-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 1.2rem; padding-bottom: 0.8rem; border-bottom: 1px solid var(--rule);
+}
+.login-panel-title { font-family: 'DM Mono', monospace; font-size: 0.8rem; color: var(--ink); font-weight: 500; }
+.login-panel-close {
+  background: none; border: none; cursor: pointer; color: var(--muted);
+  font-size: 1rem; padding: 0.2rem 0.4rem; border-radius: 3px; transition: color 0.15s;
+}
+.login-panel-close:hover { color: var(--ink); }
+
+/* Logged-in strip */
+.logged-user-strip {
+  background: var(--green-bg); border: 1px solid #b0d4bb; border-radius: 6px;
+  padding: 0.6rem 0.9rem; font-size: 0.8rem; color: var(--green);
+  margin-bottom: 1rem; gap: 0.5rem; align-items: center;
+}
+.logout-link {
+  margin-left: auto; font-family: 'DM Mono', monospace; font-size: 0.7rem;
+  color: var(--muted); cursor: pointer; text-decoration: underline;
+}
+.logout-link:hover { color: var(--red); }
+
+/* Auth form */
+.panel-auth p { font-size: 0.82rem; color: var(--ink3); margin-bottom: 1rem; line-height: 1.6; }
+.pw-input-wrap { display: flex; position: relative; margin-bottom: 0.5rem; }
+.pw-input {
+  flex: 1; background: var(--white); border: 1px solid var(--rule); border-radius: 5px;
+  padding: 0.6rem 2.5rem 0.6rem 0.9rem; font-family: 'DM Sans', sans-serif;
+  font-size: 0.9rem; color: var(--ink); outline: none; transition: border-color 0.15s;
+}
+.pw-input:focus { border-color: var(--accent); }
+.pw-toggle {
+  position: absolute; right: 0.5rem; top: 50%; transform: translateY(-50%);
+  background: none; border: none; cursor: pointer; font-size: 1rem; padding: 0.2rem;
+}
+.pw-error { font-family: 'DM Mono', monospace; font-size: 0.7rem; color: var(--red); min-height: 1.2em; margin-bottom: 0.4rem; }
+.pw-remember { display: flex; align-items: center; gap: 0.5rem; font-size: 0.78rem; color: var(--ink3); margin-bottom: 1rem; cursor: pointer; }
+.pw-actions { display: flex; gap: 0.6rem; }
+.pw-submit {
+  flex: 1; background: var(--accent); color: #fff; border: none; border-radius: 5px;
+  padding: 0.65rem; font-family: 'DM Mono', monospace; font-size: 0.75rem;
+  cursor: pointer; transition: background 0.15s;
+}
+.pw-submit:hover { background: #1a4a70; }
+.pw-cancel {
+  background: var(--bg2); color: var(--ink3); border: 1px solid var(--rule); border-radius: 5px;
+  padding: 0.65rem 1rem; font-family: 'DM Mono', monospace; font-size: 0.75rem; cursor: pointer;
+}
+
+/* Panel tabs */
+.panel-tabs { display: flex; gap: 0.3rem; flex-wrap: wrap; margin-bottom: 1rem; border-bottom: 1px solid var(--rule); padding-bottom: 0.8rem; }
+.panel-tab {
+  font-family: 'DM Mono', monospace; font-size: 0.68rem; padding: 0.35rem 0.75rem;
+  border-radius: 4px; border: 1px solid var(--rule); background: var(--bg2); color: var(--muted);
+  cursor: pointer; transition: all 0.15s;
+}
+.panel-tab:hover { color: var(--ink); border-color: var(--ink3); }
+.panel-tab.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+/* Tag controls on pub cards */
+.tag-controls { display: none; align-items: center; gap: 0.8rem; }
+.tag-controls.visible { display: flex; }
+.tag-check {
+  display: flex; align-items: center; gap: 0.3rem; font-family: 'DM Mono', monospace;
+  font-size: 0.65rem; cursor: pointer; color: var(--muted); user-select: none;
+}
+.sci-check   { color: var(--sci); }
+.scopus-check { color: var(--scopus); }
+
+/* Publication action buttons */
+.pub-btn {
+  font-family: 'DM Mono', monospace; font-size: 0.63rem; padding: 0.25rem 0.6rem;
+  border-radius: 4px; border: 1px solid var(--rule); background: var(--bg2); color: var(--ink3);
+  cursor: pointer; transition: all 0.15s;
+}
+.pub-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+/* IF badge */
+.pub-tag.if-badge { background: #fef3e2; color: #b45309; border-color: #f0c070; font-weight: 600; }
+
+/* Loading spinner */
+.pub-loading { display: flex; align-items: center; gap: 0.8rem; padding: 2rem; color: var(--muted); font-family: 'DM Mono', monospace; font-size: 0.75rem; }
+.pub-loading-spinner {
+  width: 18px; height: 18px; border: 2px solid var(--bg3); border-top-color: var(--accent);
+  border-radius: 50%; animation: spin 0.7s linear infinite; flex-shrink: 0;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Shake animation for wrong password */
+@keyframes shake {
+  0%,100% { transform: translateX(0); }
+  20%,60%  { transform: translateX(-6px); }
+  40%,80%  { transform: translateX(6px); }
+}
+.shake { animation: shake 0.4s ease; }
+
+/* Citation modal */
+.modal-overlay {
+  display: none; position: fixed; inset: 0; background: rgba(28,26,23,0.5);
+  z-index: 2000; align-items: center; justify-content: center;
+}
+.modal-overlay.open { display: flex; }
+.modal {
+  background: var(--white); border-radius: 10px; padding: 2rem; width: 520px;
+  max-width: 92vw; box-shadow: var(--shadow-lg);
+}
+.modal h3 { font-family: 'Cormorant Garamond', serif; font-size: 1.2rem; margin-bottom: 1rem; }
+.cite-box {
+  background: var(--bg); border: 1px solid var(--rule); border-radius: 6px; padding: 1rem;
+  font-size: 0.82rem; line-height: 1.7; color: var(--ink3); margin-bottom: 1.2rem;
+}
+.modal-actions { display: flex; gap: 0.6rem; justify-content: flex-end; }
+.modal-btn {
+  font-family: 'DM Mono', monospace; font-size: 0.72rem; padding: 0.55rem 1rem;
+  border-radius: 5px; border: 1px solid var(--rule); background: var(--bg2); color: var(--ink3); cursor: pointer;
+}
+.modal-btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+.modal-btn:hover { opacity: 0.85; }
+
+/* Activity form */
+.act-form { display: flex; flex-direction: column; gap: 0.7rem; padding-bottom: 1rem; border-bottom: 1px solid var(--rule); margin-bottom: 1rem; }
+.act-form label { font-family: 'DM Mono', monospace; font-size: 0.68rem; color: var(--muted); display: block; margin-bottom: 0.25rem; }
+.act-form input, .act-form select, .act-form textarea {
+  width: 100%; background: var(--white); border: 1px solid var(--rule); border-radius: 5px;
+  padding: 0.5rem 0.8rem; font-family: 'DM Sans', sans-serif; font-size: 0.82rem;
+  color: var(--ink); outline: none; transition: border-color 0.15s;
+}
+.act-form input:focus, .act-form select:focus, .act-form textarea:focus { border-color: var(--accent); }
+.act-form textarea { min-height: 60px; resize: vertical; }
