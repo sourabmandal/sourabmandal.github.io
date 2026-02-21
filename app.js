@@ -130,7 +130,7 @@ async function hashString(str) {
   return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
 }
 
-async async function submitLogin() {
+async function submitLogin() {
   const pwd = document.getElementById('pw-input').value;
   const err = document.getElementById('pw-error');
   const inp = document.getElementById('pw-input');
@@ -692,7 +692,7 @@ function showToast(msg) {
 //  INIT
 // ═══════════════════════════════════════════════════════
 async function init() {
-  await loadStorage();
+  loadStorage();
   renderActivitiesPublic();
 
   // Admin session (Supabase) preferred. Falls back to legacy local flag.
