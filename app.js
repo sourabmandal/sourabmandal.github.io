@@ -7,6 +7,7 @@ const AUTH_KEY  = 'sourab_tag_auth_v1';
 const TAG_KEY   = 'sourab_index_tags_v2';
 const IF_KEY    = 'sourab_impact_factors_v1';
 const ACT_KEY   = 'sourab_activities_v1';
+const ADMIN_PASSWORD_HASH = "b03ddf3ca2e714a6548e749f1b0c4ce3e06a5a7d61f08cc2c1fbbf5a5a7f8a32"; 
 
 
 // ═══════════════════════════════════════════════════════
@@ -58,12 +59,6 @@ async function loadRemoteState() {
 
 async function saveRemoteState() {
   if (!SUPABASE_ENABLED) return;
-
-  const session = await getSessionSafe();
-  if (!session) {
-    showToast('Not logged in (cannot save)');
-    return;
-  }
 
   const payload = {
     id: CFG.STATE_ROW_ID || 1,
@@ -163,11 +158,19 @@ async function submitLogin() {
 
   if (!pwd) { err.textContent = 'Please enter your password.'; return; }
 
-  // If Supabase is not configured, we cannot persist changes across devices.
-  if (!SUPABASE_ENABLED) {
-    err.textContent = 'Supabase is not configured. Please set config.js first.';
-    return;
+  const hash = await hashString(pwd);
+
+  if (hash === ADMIN_PASSWORD_HASH) {
+    setAuthenticated(remember);
+    activateLoggedInState();
+    showToast('Admin unlocked ✓');
+    err.textContent = '';
+  } else {
+    err.textContent = 'Incorrect password.';
+    inp.classList.remove('shake'); void inp.offsetWidth; inp.classList.add('shake');
+    inp.select();
   }
+}
 
   const { error } = await sb.auth.signInWithPassword({
     email: (CFG.ADMIN_EMAIL || ''),
@@ -201,11 +204,7 @@ function activateLoggedInState() {
   switchTab('tagging', document.querySelector('.panel-tab'));
 }
 
-async function logout() {
-  try {
-    if (SUPABASE_ENABLED) await sb.auth.signOut();
-  } catch(e) { debugLog('signOut error', e); }
-
+function logout() {
   clearAuth();
   loggedIn = false;
   document.getElementById('login-btn').textContent = '🔐 Login';
@@ -216,10 +215,6 @@ async function logout() {
   document.getElementById('panel-tabs-bar').style.display = 'none';
   document.getElementById('panel-body').style.display = 'none';
   document.getElementById('logged-strip').style.display = 'none';
-
-  // Reset fields
-  document.getElementById('pw-input').value = '';
-  document.getElementById('pw-error').textContent = '';
 
   showToast('Logged out');
 }
