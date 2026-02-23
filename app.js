@@ -307,12 +307,13 @@ async function fetchORCID() {
     }
 
     // Step 2: Fetch full details (including authors) in bulk — 100 put-codes per request.
-    // This replaces N individual /work/{putCode} calls with just 1–2 bulk calls.
+    // Correct ORCID bulk API uses repeated query params: ?put-codes=X&put-codes=Y
     const BULK_SIZE = 100;
     const bulkResults = [];
     for (let i = 0; i < putCodes.length; i += BULK_SIZE) {
-      const chunk = putCodes.slice(i, i + BULK_SIZE).join(',');
-      const bulkRes = await fetch(`${ORCID_API}/${ORCID_ID}/works/${chunk}`, {
+      const chunk = putCodes.slice(i, i + BULK_SIZE);
+      const query = chunk.map(c => `put-codes=${c}`).join('&');
+      const bulkRes = await fetch(`${ORCID_API}/${ORCID_ID}/works?${query}`, {
         headers: { Accept: 'application/json' }
       });
       if (!bulkRes.ok) throw new Error('ORCID bulk API ' + bulkRes.status);
