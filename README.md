@@ -2,7 +2,6 @@
 
 ## Admin Login
 
-**Password: `Sourab@2024`**
 
 To change it: open browser console on your site and run:
 ```js
