@@ -9,7 +9,7 @@ const TAG_KEY  = 'sourab_index_tags_v2';
 const IF_KEY   = 'sourab_impact_factors_v1';
 const ACT_KEY  = 'sourab_activities_v1';
 
-// SHA-256 of password: Sourab@2024
+
 // To change password: run in browser console →
 //   crypto.subtle.digest('SHA-256', new TextEncoder().encode('YourNewPassword'))
 //     .then(b => console.log(Array.from(new Uint8Array(b)).map(x=>x.toString(16).padStart(2,'0')).join('')))
